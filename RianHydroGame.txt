@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HydroFarm Tycoon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        #game-status {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HydroFarm Tycoon</h1>
+        <p>Pilih sistem hidroponik:</p>
+        <button class="button" onclick="selectSystem('NFT')">NFT</button>
+        <button class="button" onclick="selectSystem('DFT')">DFT</button>
+        <button class="button" onclick="selectSystem('Wick')">Wick System</button>
+        <button class="button" onclick="selectSystem('Ebb and Flow')">Ebb and Flow</button>
+        
+        <p>Pilih tanaman:</p>
+        <button class="button" onclick="plant('Selada')">Selada</button>
+        <button class="button" onclick="plant('Bayam')">Bayam</button>
+        <button class="button" onclick="plant('Kangkung')">Kangkung</button>
+        
+        <p>Atur pH:</p>
+        <button class="button" onclick="adjustPH(5.5)">pH 5.5</button>
+        <button class="button" onclick="adjustPH(6.0)">pH 6.0</button>
+        <button class="button" onclick="adjustPH(6.5)">pH 6.5</button>
+        
+        <p>Simulasi Pertumbuhan Tanaman:</p>
+        <button class="button" onclick="growPlant()">Tumbuhkan Tanaman</button>
+        
+        <p>Jual Hasil Panen:</p>
+        <button class="button" onclick="sellHarvest()">Jual Panen</button>
+        
+        <div id="game-status">Pilih sistem hidroponik untuk memulai!</div>
+    </div>
+    
+    <script>
+        let system = "";
+        let plantType = "";
+        let phLevel = 0;
+        let growthStage = 0;
+        let money = 0;
+        let marketPrice = 50;
+        let pestAttack = false;
+        
+        function selectSystem(selectedSystem) {
+            system = selectedSystem;
+            updateStatus("Anda memilih sistem: " + system);
+        }
+        
+        function plant(selectedPlant) {
+            if (!system) {
+                updateStatus("Pilih sistem hidroponik terlebih dahulu!");
+                return;
+            }
+            plantType = selectedPlant;
+            growthStage = 0;
+            pestAttack = Math.random() < 0.3; // 30% kemungkinan terkena hama
+            updateStatus("Anda menanam: " + plantType + " di sistem " + system);
+        }
+        
+        function adjustPH(selectedPH) {
+            if (!plantType) {
+                updateStatus("Pilih tanaman terlebih dahulu!");
+                return;
+            }
+            phLevel = selectedPH;
+            updateStatus("pH disetel ke: " + phLevel + " untuk tanaman " + plantType);
+        }
+        
+        function growPlant() {
+            if (!plantType) {
+                updateStatus("Tanam tanaman terlebih dahulu!");
+                return;
+            }
+            if (pestAttack) {
+                updateStatus("Tanaman terkena hama! Gunakan pestisida sebelum tumbuh lebih lanjut.");
+                return;
+            }
+            if (phLevel < 5.5 || phLevel > 6.5) {
+                updateStatus("pH tidak optimal! Pertumbuhan melambat.");
+                return;
+            }
+            if (growthStage < 3) {
+                growthStage++;
+                updateStatus("Tanaman " + plantType + " telah tumbuh ke tahap " + growthStage + "/3");
+            } else {
+                updateStatus("Tanaman " + plantType + " siap dipanen!");
+            }
+        }
+        
+        function sellHarvest() {
+            if (growthStage < 3) {
+                updateStatus("Tanaman belum siap panen!");
+                return;
+            }
+            marketPrice = Math.floor(Math.random() * 50) + 30; // Harga pasar dinamis antara 30-80
+            money += marketPrice;
+            growthStage = 0;
+            plantType = "";
+            updateStatus("Panen berhasil dijual dengan harga Rp" + marketPrice + "! Uang Anda: Rp" + money);
+        }
+        
+        function updateStatus(message) {
+            document.getElementById("game-status").innerText = message;
+        }
+    </script>
+</body>
+</html>
